@@ -1,12 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Inject } from '@nestjs/common';
+import { ConfigService, ConfigType } from '@nestjs/config';
+import emailConfig from './config/emailConfig';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    @Inject(emailConfig.KEY) private config: ConfigType<typeof emailConfig>,
+  ) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getENV(): string {
+    return this.config.service;
   }
 }
