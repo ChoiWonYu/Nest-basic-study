@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { CreatePostDTO } from './dto/create-post.dto';
 import { UpdatePostDTO } from './dto/update-post.dto';
+import { PostEntity } from './entity/post.entity';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
@@ -16,30 +17,30 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async getAllPosts() {
-    return await this.postsService.getAllPosts();
+  getAllPosts(): PostEntity[] {
+    return this.postsService.getAllPosts();
   }
 
   @Get('/:id')
-  async getPostById(@Param('id') postId: number) {
-    return await this.postsService.getPostById(postId);
+  getPostById(@Param('id') postId: string): PostEntity {
+    return this.postsService.getPostById(postId);
   }
 
   @Post()
-  async createPost(@Body() createPostDTO: CreatePostDTO) {
-    return await this.postsService.createPost(createPostDTO);
+  createPost(@Body() createPostDTO: CreatePostDTO): PostEntity {
+    return this.postsService.createPost(createPostDTO);
   }
 
   @Patch('/:id')
-  async updatePost(
-    @Param('id') postId: number,
+  updatePost(
+    @Param('id') postId: string,
     @Body() updatePostDTO: UpdatePostDTO,
-  ) {
-    return await this.postsService.updatePost(postId, updatePostDTO);
+  ): string {
+    return this.postsService.updatePost(postId, updatePostDTO);
   }
 
   @Delete('/:id')
-  async deletePost(@Param('id') postId: number) {
-    return await this.postsService.deletePost(postId);
+  deletePost(@Param('id') postId: string): string {
+    return this.postsService.deletePost(postId);
   }
 }

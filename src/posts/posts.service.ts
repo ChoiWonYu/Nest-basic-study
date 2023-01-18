@@ -1,28 +1,54 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePostDTO } from './dto/create-post.dto';
 import { UpdatePostDTO } from './dto/update-post.dto';
+import { PostEntity } from './entity/post.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class PostsService {
-  async getAllPosts() {
-    return 'get all posts';
+  private posts = [];
+
+  getAllPosts(): PostEntity[] {
+    return this.posts;
   }
 
-  async getPostById(postId: number) {
-    return `get post Id ${postId}`;
+  getPostById(postId: string): PostEntity {
+    const targetPost = this.posts.find((post) => post.id === postId);
+    if (!targetPost) {
+      throw new BadRequestException();
+    }
+    return targetPost;
   }
 
-  async createPost(createPostDTO: CreatePostDTO) {
+  createPost(createPostDTO: CreatePostDTO): PostEntity {
     const { content, title } = createPostDTO;
-    return `create post content:${content} title:${title}`;
+    const newPost = {
+      id: uuidv4(),
+      content,
+      title,
+    };
+    this.posts.push(newPost);
+    return newPost;
   }
 
-  async updatePost(postId: number, updatePostDTO: UpdatePostDTO) {
+  updatePost(postId: string, updatePostDTO: UpdatePostDTO): string {
     const { content, title } = updatePostDTO;
-    return `update post content:${content}, title:${title}`;
+    const targetPost = this.getPostById(postId);
+    this.posts = this.posts.map((post) => {
+      if (post.id === postId)
+        return {
+          ...targetPost,
+          title,
+          content,
+        };
+      else return post;
+    });
+    return 'post is updated';
   }
 
-  async deletePost(postId: number) {
-    return `delete post Id ${postId}`;
+  deletePost(postId: string): string {
+    this.getPostById(postId);
+    this.posts = this.posts.filter((post) => postId !== post.id);
+    return 'post is deleted';
   }
 }
