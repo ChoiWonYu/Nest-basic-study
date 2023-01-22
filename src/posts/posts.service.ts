@@ -1,18 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePostDTO } from './dto/create-post.dto';
 import { UpdatePostDTO } from './dto/update-post.dto';
-import { PostEntity } from './entity/post.entity';
+import { postEntity } from './entity/post.entity';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class PostsService {
   private posts = [];
 
-  getAllPosts(): PostEntity[] {
+  getAllPosts(): postEntity[] {
     return this.posts;
   }
 
-  getPostById(postId: string): PostEntity {
+  getPostById(postId: string): postEntity {
     const targetPost = this.posts.find((post) => post.id === postId);
     if (!targetPost) {
       throw new BadRequestException();
@@ -20,7 +20,7 @@ export class PostsService {
     return targetPost;
   }
 
-  createPost(createPostDTO: CreatePostDTO): PostEntity {
+  createPost(createPostDTO: CreatePostDTO): postEntity {
     const { content, title } = createPostDTO;
     const newPost = {
       id: uuidv4(),

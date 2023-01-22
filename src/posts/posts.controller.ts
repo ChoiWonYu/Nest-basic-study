@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { CreatePostDTO } from './dto/create-post.dto';
 import { UpdatePostDTO } from './dto/update-post.dto';
-import { PostEntity } from './entity/post.entity';
+import { postEntity } from './entity/post.entity';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
@@ -17,17 +17,17 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  getAllPosts(): PostEntity[] {
+  getAllPosts(): postEntity[] {
     return this.postsService.getAllPosts();
   }
 
   @Get('/:id')
-  getPostById(@Param('id') postId: string): PostEntity {
+  getPostById(@Param('id') postId: string): postEntity {
     return this.postsService.getPostById(postId);
   }
 
   @Post()
-  createPost(@Body() createPostDTO: CreatePostDTO): PostEntity {
+  createPost(@Body() createPostDTO: CreatePostDTO): postEntity {
     return this.postsService.createPost(createPostDTO);
   }
 
