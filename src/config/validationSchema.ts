@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import * as Joi from 'Joi';
 
 export const validationSchema = Joi.object({
   EMAIL_SERVICE: Joi.string().required(),
