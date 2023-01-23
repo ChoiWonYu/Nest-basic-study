@@ -5,7 +5,5 @@ export class CreatePostDTO {
   @MinLength(2)
   title: string;
 
-  @IsString()
-  @MinLength(4)
   content: string;
 }
