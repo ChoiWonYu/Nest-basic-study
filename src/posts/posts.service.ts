@@ -21,25 +21,25 @@ export class PostsService {
   }
 
   createPost(createPostDTO: CreatePostDTO): postEntity {
-    const { content, title } = createPostDTO;
+    const { caption, hashtag } = createPostDTO;
     const newPost = {
       id: uuidv4(),
-      content,
-      title,
+      caption,
+      hashtag,
     };
     this.posts.push(newPost);
     return newPost;
   }
 
   updatePost(postId: string, updatePostDTO: UpdatePostDTO): string {
-    const { content, title } = updatePostDTO;
+    const { caption, hashtag } = updatePostDTO;
     const targetPost = this.getPostById(postId);
     this.posts = this.posts.map((post) => {
       if (post.id === postId)
         return {
           ...targetPost,
-          title,
-          content,
+          hashtag,
+          caption,
         };
       else return post;
     });
