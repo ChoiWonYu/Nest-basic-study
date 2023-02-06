@@ -15,8 +15,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'root',
       password: 'test123',
       database: 'instaApi',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
+      autoLoadEntities: true,
     }),
     ConfigModule.forRoot({
       isGlobal: true,

@@ -10,9 +10,9 @@ import { ulid } from 'ulid';
 @Injectable()
 export class UsersService {
   constructor(
-    private emailService: EmailService,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private emailService: EmailService,
   ) {}
 
   async createUser(name: string, email: string, password: string) {
@@ -30,7 +30,8 @@ export class UsersService {
 
   async checkUserExists(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
-    return user !== undefined;
+    console.log(user);
+    return user !== null;
   }
 
   async saveUser(
