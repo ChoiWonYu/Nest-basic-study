@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { EmailService } from 'src/email/email.service';
 import * as uuid from 'uuid';
@@ -10,7 +6,6 @@ import { UserEntity } from './entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import { DataSource } from 'typeorm';
-import { sign } from 'crypto';
 
 @Injectable()
 export class UsersService {
