@@ -1,11 +1,16 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { EmailService } from 'src/email/email.service';
 import * as uuid from 'uuid';
 import { UserEntity } from './entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm/repository/Repository';
-import { ulid } from 'ulid';
+import { DataSource } from 'typeorm';
+import { sign } from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +18,7 @@ export class UsersService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private emailService: EmailService,
+    private dataSource: DataSource,
   ) {}
 
   async createUser(name: string, email: string, password: string) {
@@ -24,7 +30,12 @@ export class UsersService {
     }
     const signupVerifyToken = uuid.v1();
     //토큰 생성
-    await this.saveUser(name, email, password, signupVerifyToken);
+    await this.saveUserUsingQueryRunner(
+      name,
+      email,
+      password,
+      signupVerifyToken,
+    );
     await this.sendMemberJoinEmail(email, signupVerifyToken);
   }
 
@@ -33,20 +44,49 @@ export class UsersService {
     console.log(user);
     return user !== null;
   }
-
-  async saveUser(
+  private async saveUserUsingTransaction(
     name: string,
     email: string,
     password: string,
     signupVerifyToken: string,
   ) {
-    const user = new UserEntity();
-    user.id = ulid();
-    user.name = name;
-    user.email = email;
-    user.password = password;
-    user.signupVerifyToken = signupVerifyToken;
-    await this.userRepository.save(user);
+    this.dataSource.transaction(async (manager) => {
+      const user = new UserEntity();
+      user.name = name;
+      user.email = email;
+      user.password = password;
+      user.signupVerifyToken = signupVerifyToken;
+      await manager.save(user);
+    });
+  }
+
+  private async saveUserUsingQueryRunner(
+    name: string,
+    email: string,
+    password: string,
+    signupVerifyToken: string,
+  ) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const user = new UserEntity();
+      user.name = name;
+      user.email = email;
+      user.password = password;
+      user.signupVerifyToken = signupVerifyToken;
+
+      await queryRunner.manager.save(user);
+
+      // throw new InternalServerErrorException();
+
+      await queryRunner.commitTransaction();
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async sendMemberJoinEmail(email: string, signupVerifyToken: string) {
