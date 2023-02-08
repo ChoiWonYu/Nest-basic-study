@@ -9,13 +9,14 @@ import DBConfig from './config/DBConfig';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { UsersController } from './users/users.controller';
 import { AuthModule } from './auth/auth.module';
+import JwtConfig from './config/JwtConfig';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`${__dirname}/config/env/.${process.env.NODE_ENV}.env`],
-      load: [emailConfig, DBConfig],
+      load: [emailConfig, DBConfig, JwtConfig],
       validationSchema,
     }),
     TypeOrmModule.forRootAsync({
