@@ -1,15 +1,14 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { CreateUserDTO } from './dto/create-user.dto';
 import { EmailService } from 'src/email/email.service';
 import * as uuid from 'uuid';
 import { UserEntity } from './entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import { DataSource } from 'typeorm';
-import { NotFoundError } from 'rxjs';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { AuthService } from 'src/auth/auth.service';
-import { UserInfo } from 'os';
+import { UserInfo } from './types/UserInfo';
+import { IToken } from './types/IToken';
 
 @Injectable()
 export class UsersService {
@@ -97,7 +96,7 @@ export class UsersService {
     //회원가입 인증 이메일 발송
   }
 
-  async verifyEmail(signupVerifyToken: string): Promise<Object> {
+  async verifyEmail(signupVerifyToken: string): Promise<IToken> {
     const user = await this.userRepository.findOne({
       where: { signupVerifyToken },
     });
@@ -107,7 +106,7 @@ export class UsersService {
     return this.authService.login(user);
   }
 
-  async login(email: string, password): Promise<Object> {
+  async login(email: string, password): Promise<IToken> {
     const user = await this.userRepository.findOne({
       where: { email, password },
     });
@@ -116,11 +115,15 @@ export class UsersService {
     }
     return this.authService.login(user);
   }
-  async getUserInfo(id: string): Promise<CreateUserDTO> {
+  async getUserInfo(id: string): Promise<UserInfo> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException('유저가 존재하지 않습니다.');
     }
-    return user;
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    };
   }
 }

@@ -5,6 +5,7 @@ import { UserLoginDTO } from './dto/user-login.dto';
 import { VerifyEmailDTO } from './dto/verify-email.dto';
 import { UseGuards } from '@nestjs/common/decorators';
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
+import { UserInfo } from './types/UserInfo';
 
 @Controller('users')
 export class UsersController {
@@ -33,7 +34,7 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'))
   @Get('/:id')
   //회원 조회
-  async getUserInfo(@Param('id') id: string): Promise<CreateUserDTO> {
+  async getUserInfo(@Param('id') id: string): Promise<UserInfo> {
     return await this.usersService.getUserInfo(id);
   }
 }
