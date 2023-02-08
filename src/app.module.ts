@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import DBConfig from './config/DBConfig';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { UsersController } from './users/users.controller';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { UsersController } from './users/users.controller';
     }),
     PostsModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
