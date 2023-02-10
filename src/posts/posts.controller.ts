@@ -45,7 +45,7 @@ export class PostsController {
   }
 
   @Delete('/:id')
-  deletePost(@Param('id') postId: string) {
-    return this.postsService.deletePost(postId);
+  deletePost(@Param('id') postId: string, @UserFromToken() userId: string) {
+    return this.postsService.deletePost(postId, userId);
   }
 }

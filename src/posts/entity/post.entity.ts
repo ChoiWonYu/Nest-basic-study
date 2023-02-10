@@ -16,8 +16,12 @@ export class postEntity {
   caption: string;
 
   @Column()
+  userId: string;
+
+  @Column()
   hashtag: string;
 
   @ManyToOne((type) => UserEntity, (user) => user.posts)
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: UserEntity;
 }

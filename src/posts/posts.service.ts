@@ -34,7 +34,6 @@ export class PostsService {
 
   async createPost(createPostDTO: CreatePostDTO, userId) {
     const { caption, hashtag } = createPostDTO;
-    console.log(userId);
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const newPost = {
       caption,
@@ -45,23 +44,30 @@ export class PostsService {
     return newPost;
   }
 
+  async isMine(postId: string, userId: string) {
+    const targetPost = await this.postRepository.findOne({
+      where: { id: postId },
+    });
+    console.log(targetPost, userId);
+    return targetPost.userId === userId;
+  }
+
   async updatePost(
     postId: string,
     updatePostDTO: UpdatePostDTO,
     userId: string,
   ): Promise<string> {
-    const targetPost = await this.postRepository.findOne({
-      where: { id: postId },
-    });
-    console.log(targetPost);
-    // if (targetPost.user.id !== userId) {
-    //   throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    // }
+    if (!(await this.isMine(postId, userId))) {
+      throw new HttpException('권한이 없습니다.', HttpStatus.UNAUTHORIZED);
+    }
     await this.postRepository.update(postId, updatePostDTO);
     return 'post is updated';
   }
 
-  async deletePost(postId: string): Promise<string> {
+  async deletePost(postId: string, userId: string) {
+    if (!(await this.isMine(postId, userId))) {
+      throw new HttpException('권한이 없습니다.', HttpStatus.UNAUTHORIZED);
+    }
     this.getPostById(postId);
     await this.postRepository.delete(postId);
     return 'post is deleted';
