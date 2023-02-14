@@ -5,8 +5,6 @@ export class CreatePostDTO {
   @MaxLength(2200)
   caption: string;
 
-  @IsArray()
-  @IsString({ each: true })
-  @ArrayMaxSize(30)
-  hashtag: string[];
+  @IsString()
+  hashtag: string;
 }

@@ -1,54 +1,75 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { CreatePostDTO } from './dto/create-post.dto';
 import { UpdatePostDTO } from './dto/update-post.dto';
 import { postEntity } from './entity/post.entity';
-import { v4 as uuidv4 } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserEntity } from 'src/users/entity/user.entity';
 
 @Injectable()
 export class PostsService {
-  private posts = [];
+  constructor(
+    @InjectRepository(postEntity)
+    private postRepository: Repository<postEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+  ) {}
 
-  getAllPosts(): postEntity[] {
-    return this.posts;
+  async getAllPosts(): Promise<postEntity[]> {
+    return await this.postRepository.find();
   }
 
-  getPostById(postId: string): postEntity {
-    const targetPost = this.posts.find((post) => post.id === postId);
+  async getPostById(postId: string): Promise<postEntity> {
+    const targetPost = this.postRepository.findOne({ where: { id: postId } });
     if (!targetPost) {
       throw new BadRequestException();
     }
     return targetPost;
   }
 
-  createPost(createPostDTO: CreatePostDTO): postEntity {
+  async createPost(createPostDTO: CreatePostDTO, userId) {
     const { caption, hashtag } = createPostDTO;
+    const user = await this.userRepository.findOne({ where: { id: userId } });
     const newPost = {
-      id: uuidv4(),
       caption,
       hashtag,
+      user,
     };
-    this.posts.push(newPost);
+    await this.postRepository.save(newPost);
     return newPost;
   }
 
-  updatePost(postId: string, updatePostDTO: UpdatePostDTO): string {
-    const { caption, hashtag } = updatePostDTO;
-    const targetPost = this.getPostById(postId);
-    this.posts = this.posts.map((post) => {
-      if (post.id === postId)
-        return {
-          ...targetPost,
-          hashtag,
-          caption,
-        };
-      else return post;
+  async isMine(postId: string, userId: string) {
+    const targetPost = await this.postRepository.findOne({
+      where: { id: postId },
     });
+    console.log(targetPost, userId);
+    return targetPost.userId === userId;
+  }
+
+  async updatePost(
+    postId: string,
+    updatePostDTO: UpdatePostDTO,
+    userId: string,
+  ): Promise<string> {
+    if (!(await this.isMine(postId, userId))) {
+      throw new HttpException('권한이 없습니다.', HttpStatus.UNAUTHORIZED);
+    }
+    await this.postRepository.update(postId, updatePostDTO);
     return 'post is updated';
   }
 
-  deletePost(postId: string): string {
+  async deletePost(postId: string, userId: string) {
+    if (!(await this.isMine(postId, userId))) {
+      throw new HttpException('권한이 없습니다.', HttpStatus.UNAUTHORIZED);
+    }
     this.getPostById(postId);
-    this.posts = this.posts.filter((post) => postId !== post.id);
+    await this.postRepository.delete(postId);
     return 'post is deleted';
   }
 }

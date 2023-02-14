@@ -9,7 +9,7 @@ import DBConfig from './config/DBConfig';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { UsersController } from './users/users.controller';
 import { AuthModule } from './auth/auth.module';
-import JwtConfig from './config/JwtConfig';
+import JwtConfig from 'src/config/JwtConfig';
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import JwtConfig from './config/JwtConfig';
         username: config.userName,
         password: config.password,
         database: config.database,
-        synchronize: false,
+        synchronize: true,
         autoLoadEntities: true,
       }),
     }),
