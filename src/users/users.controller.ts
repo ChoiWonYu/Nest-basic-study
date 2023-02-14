@@ -1,18 +1,37 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  Inject,
+  Logger,
+  LoggerService,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { VerifyEmailDTO } from './dto/verify-email.dto';
-import { UseGuards } from '@nestjs/common/decorators';
+import { UseFilters, UseGuards } from '@nestjs/common/decorators';
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
 import { UserInfo } from './types/UserInfo';
+import { HttpExceptionFilter } from 'src/exception/HttpException.filter';
 
 @Controller('users')
+@UseFilters(HttpExceptionFilter)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    @Inject(Logger) private readonly logger: LoggerService,
+    private readonly usersService: UsersService,
+  ) {}
+
+  private printWinstonLog(dto) {}
 
   @Post()
   async create(@Body() dto: CreateUserDTO): Promise<void> {
+    this.printWinstonLog(dto);
+
     const { name, email, password } = dto;
     await this.usersService.createUser(name, email, password);
   }

@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PostsModule } from './posts/posts.module';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import emailConfig from './config/emailConfig';
@@ -6,9 +6,8 @@ import { validationSchema } from './config/validationSchema';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import DBConfig from './config/DBConfig';
-import { LoggerMiddleware } from './logger/logger.middleware';
-import { UsersController } from './users/users.controller';
 import { AuthModule } from './auth/auth.module';
+import { ExceptionModule } from './exception/exception.module';
 import JwtConfig from 'src/config/JwtConfig';
 
 @Module({
@@ -36,12 +35,9 @@ import JwtConfig from 'src/config/JwtConfig';
     PostsModule,
     UsersModule,
     AuthModule,
+    ExceptionModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes(UsersController);
-  }
-}
+export class AppModule {}

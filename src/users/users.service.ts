@@ -117,9 +117,9 @@ export class UsersService {
   }
   async getUserInfo(id: string): Promise<UserInfo> {
     const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) {
-      throw new NotFoundException('유저가 존재하지 않습니다.');
-    }
+    // if (!user) {
+    //   throw new NotFoundException('유저가 존재하지 않습니다.');
+    // }
     return {
       id: user.id,
       name: user.name,
