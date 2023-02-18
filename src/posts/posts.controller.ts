@@ -35,6 +35,11 @@ export class PostsController {
     return this.postsService.createPost(createPostDTO, userId);
   }
 
+  @Post('/draft')
+  draftPost(@UserFromToken() userId, @Body() createPostDTO: CreatePostDTO) {
+    return this.postsService.draftPost(createPostDTO, userId);
+  }
+
   @Patch('/:id')
   updatePost(
     @Param('id') postId: string,

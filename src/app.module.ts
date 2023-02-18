@@ -9,6 +9,8 @@ import DBConfig from './config/DBConfig';
 import { AuthModule } from './auth/auth.module';
 import { ExceptionModule } from './exception/exception.module';
 import JwtConfig from 'src/config/JwtConfig';
+import { ScheduleModule } from '@nestjs/schedule';
+import { DraftModule } from './draft/draft.module';
 
 @Module({
   imports: [
@@ -32,10 +34,12 @@ import JwtConfig from 'src/config/JwtConfig';
         autoLoadEntities: true,
       }),
     }),
+    ScheduleModule.forRoot(),
     PostsModule,
     UsersModule,
     AuthModule,
     ExceptionModule,
+    DraftModule,
   ],
   controllers: [],
   providers: [],
