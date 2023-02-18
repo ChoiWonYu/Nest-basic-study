@@ -3,12 +3,14 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { postEntity } from 'src/posts/entity/post.entity';
 import { Repository } from 'typeorm';
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class DraftService {
   constructor(
     @InjectRepository(postEntity)
     private postRepository: Repository<postEntity>,
+    private logger: Logger,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -23,7 +25,7 @@ export class DraftService {
       if (this.IsExpired(post.createdDate)) {
         const deletedPostId = post.id;
         this.deleteDraftPosts(post.id);
-        console.log(`${deletedPostId} post is deleted`);
+        this.logger.log(`${deletedPostId} post is deleted`);
       }
     });
   }
