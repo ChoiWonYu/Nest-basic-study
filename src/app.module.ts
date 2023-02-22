@@ -9,6 +9,7 @@ import DBConfig from './config/DBConfig';
 import { AuthModule } from './auth/auth.module';
 import { ExceptionModule } from './exception/exception.module';
 import { LoggingModule } from './logging/logging.module';
+import { BatchModule } from './batch/batch.module';
 import JwtConfig from 'src/config/JwtConfig';
 
 @Module({
@@ -38,6 +39,7 @@ import JwtConfig from 'src/config/JwtConfig';
     AuthModule,
     ExceptionModule,
     LoggingModule,
+    BatchModule,
   ],
   controllers: [],
   providers: [],
