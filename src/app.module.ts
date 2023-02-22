@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import DBConfig from './config/DBConfig';
 import { AuthModule } from './auth/auth.module';
 import { ExceptionModule } from './exception/exception.module';
+import { LoggingModule } from './logging/logging.module';
 import JwtConfig from 'src/config/JwtConfig';
 
 @Module({
@@ -36,6 +37,7 @@ import JwtConfig from 'src/config/JwtConfig';
     UsersModule,
     AuthModule,
     ExceptionModule,
+    LoggingModule,
   ],
   controllers: [],
   providers: [],
