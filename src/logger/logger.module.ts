@@ -1,13 +1,12 @@
-import { Module } from '@nestjs/common';
-import { MyLogger } from './logger.service';
+import { Module, Logger } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './logger.interceptor';
 
 @Module({
-  providers: [MyLogger],
-  exports: [
-    MyLogger,
+  providers: [
+    Logger,
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
   ],
+  exports: [Logger],
 })
 export class LoggerModule {}

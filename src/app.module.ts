@@ -11,7 +11,6 @@ import { ExceptionModule } from './exception/exception.module';
 import { BatchModule } from './batch/batch.module';
 import JwtConfig from 'src/config/JwtConfig';
 import { ScheduleModule } from '@nestjs/schedule';
-import { DraftModule } from './draft/draft.module';
 
 @Module({
   imports: [
@@ -40,7 +39,6 @@ import { DraftModule } from './draft/draft.module';
     UsersModule,
     AuthModule,
     ExceptionModule,
-    DraftModule,
     BatchModule,
   ],
   controllers: [],
