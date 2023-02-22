@@ -8,7 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import DBConfig from './config/DBConfig';
 import { AuthModule } from './auth/auth.module';
 import { ExceptionModule } from './exception/exception.module';
-import { LoggingModule } from './logging/logging.module';
+import { BatchModule } from './batch/batch.module';
 import JwtConfig from 'src/config/JwtConfig';
 import { ScheduleModule } from '@nestjs/schedule';
 import { DraftModule } from './draft/draft.module';
@@ -41,7 +41,7 @@ import { DraftModule } from './draft/draft.module';
     AuthModule,
     ExceptionModule,
     DraftModule,
-    LoggingModule,
+    BatchModule,
   ],
   controllers: [],
   providers: [],
