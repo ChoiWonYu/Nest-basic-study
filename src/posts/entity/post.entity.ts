@@ -1,6 +1,7 @@
 import { UserEntity } from 'src/users/entity/user.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -21,7 +22,13 @@ export class postEntity {
   @Column()
   hashtag: string;
 
+  @Column('boolean', { default: true })
+  isPublished: boolean;
+
   @ManyToOne((type) => UserEntity, (user) => user.posts)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: UserEntity;
+
+  @CreateDateColumn()
+  createdDate: Date;
 }

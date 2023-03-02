@@ -44,6 +44,19 @@ export class PostsService {
     return newPost;
   }
 
+  async draftPost(createPostDTO: CreatePostDTO, userId) {
+    const { caption, hashtag } = createPostDTO;
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const newPost = {
+      caption,
+      hashtag,
+      user,
+      isPublished: false,
+    };
+    await this.postRepository.save(newPost);
+    return newPost;
+  }
+
   async isMine(postId: string, userId: string) {
     const targetPost = await this.postRepository.findOne({
       where: { id: postId },
